@@ -1,0 +1,8 @@
+1. Config service: http://localhost:8888/
+2. Discovery service: http://localhost:9999/
+3. Admin monitor: http://localhost:9000/
+4. Auth service: http://localhost:8000/
+5. Ecommerce service: http://localhost:8001/
+6. Gateway: http://localhost:8080/
+   - map auth-service: http://localhost:8080/auth/
+   - map ecommerce-service http://localhost:8080/ecommerce/
