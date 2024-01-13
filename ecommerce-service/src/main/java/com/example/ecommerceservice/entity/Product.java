@@ -1,4 +1,4 @@
-package com.example.authservice.entity;
+package com.example.ecommerceservice.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "products")
-public class Product extends ModifyAuditable{
+public class Product extends ModifyAuditable {
     private String name;
 
     private Long price;

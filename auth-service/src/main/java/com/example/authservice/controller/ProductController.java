@@ -1,10 +1,9 @@
 package com.example.authservice.controller;
 
+import com.example.authservice.client.IProductServiceClient;
 import com.example.authservice.dto.ProductDTO;
 import com.example.authservice.dto.ResponseDTO;
-import com.example.authservice.service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,13 +15,10 @@ import java.util.List;
 @RequestMapping("/product")
 public class ProductController {
     @Autowired
-    private IProductService service;
+    private IProductServiceClient serviceClient;
 
     @GetMapping("")
     public ResponseEntity<ResponseDTO<List<ProductDTO>>> getAll(){
-        ResponseDTO<List<ProductDTO>> responseBody = ResponseDTO.<List<ProductDTO>>builder().data(service.getAll()).build();
-        return new ResponseEntity<ResponseDTO<List<ProductDTO>>>(responseBody, HttpStatus.OK);
+        return serviceClient.getAll();
     }
-
-
 }

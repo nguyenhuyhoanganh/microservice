@@ -1,7 +1,8 @@
-package com.example.authservice.config;
+package com.example.ecommerceservice.config;
 
-import com.example.authservice.entity.User;
-import com.example.authservice.security.CustomUserDetails;
+import com.example.ecommerceservice.entity.User;
+import com.example.ecommerceservice.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -15,6 +16,8 @@ import java.util.Optional;
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 public class JPAConfig {
+    @Autowired
+    private UserRepository userRepository;
     @Bean
     public AuditorAware<User> auditorProvider() {
         return () -> {
@@ -22,9 +25,14 @@ public class JPAConfig {
             if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
                 return Optional.empty();
             }
-            User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+            User user = (User) authentication.getPrincipal();
+
+            Optional<User> optionalUser = userRepository.findById(user.getId());
+            if(optionalUser.isEmpty())
+                userRepository.save(user);
 
             return Optional.ofNullable(user);
         };
     }
 }
+

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-//@FeignClient(name = "product-service", url = "http://localhost:8081")
-public interface IProductService {
-//    @GetMapping("")
-//    ResponseEntity<ResponseDTO<List<ProductDTO>>> getAll();
+@FeignClient(name = "ecommerce-service", url = "http://localhost:8001/product")
+public interface IProductServiceClient {
+    @GetMapping("")
+    ResponseEntity<ResponseDTO<List<ProductDTO>>> getAll();
 }

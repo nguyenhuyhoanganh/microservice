@@ -1,4 +1,4 @@
-package com.example.authservice.constant;
+package com.example.ecommerceservice.constant;
 
 public class DateTimeConstant {
     public static final String DDHHMM = "ddHHmm";

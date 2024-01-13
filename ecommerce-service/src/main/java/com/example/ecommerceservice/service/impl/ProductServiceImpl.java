@@ -1,11 +1,11 @@
-package com.example.authservice.service.impl;
+package com.example.ecommerceservice.service.impl;
 
-import com.example.authservice.dto.ProductDTO;
-import com.example.authservice.dto.UserDTO;
-import com.example.authservice.entity.Product;
-import com.example.authservice.entity.User;
-import com.example.authservice.repository.ProductRepository;
-import com.example.authservice.service.IProductService;
+import com.example.ecommerceservice.dto.ProductDTO;
+import com.example.ecommerceservice.dto.UserDTO;
+import com.example.ecommerceservice.entity.Product;
+import com.example.ecommerceservice.entity.User;
+import com.example.ecommerceservice.repository.ProductRepository;
+import com.example.ecommerceservice.service.IProductService;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -39,3 +39,4 @@ public class ProductServiceImpl implements IProductService {
         return mapper.map(product, ProductDTO.class);
     }
 }
+
