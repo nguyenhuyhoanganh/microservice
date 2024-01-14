@@ -1,6 +1,5 @@
 package com.example.authservice.entity;
 
-import com.example.authservice.enumeration.RoleEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,12 +11,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "roles")
-public class Role {
+@Table(name = "redirect_uris")
+public class RedirectUri {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private RoleEnum roleName;
+    private String uri;
+
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
 }

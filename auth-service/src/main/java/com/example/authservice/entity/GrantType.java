@@ -1,6 +1,6 @@
 package com.example.authservice.entity;
 
-import com.example.authservice.enumeration.RoleEnum;
+import com.example.authservice.enumeration.GrantTypeEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,12 +12,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "roles")
-public class Role {
+@Table(name = "grant_types")
+public class GrantType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private RoleEnum roleName;
+    private GrantTypeEnum grantType;
+
 }
