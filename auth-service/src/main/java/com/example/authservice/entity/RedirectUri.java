@@ -1,10 +1,7 @@
 package com.example.authservice.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
@@ -22,4 +19,7 @@ public class RedirectUri {
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
+
+//    @Column(name = "is_logout_uri")
+//    private boolean isLogoutUri;
 }

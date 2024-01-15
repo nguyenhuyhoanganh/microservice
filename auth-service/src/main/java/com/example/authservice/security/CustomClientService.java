@@ -43,20 +43,17 @@ public class CustomClientService implements RegisteredClientRepository {
     public RegisteredClient findByClientId(String clientId) {
         Client client = clientRepository.findByClientId(clientId)
                 .orElseThrow(() -> new ClientNotFoundException("Client not found by client_id"));
-        return Client.from(client);
+        // wtf find client can't fetch redirect_uri???
+        Set<RedirectUri> redirectUris = redirectUriRepository.findByClient(client);
+        client.setRedirectUris(
+                redirectUris.stream()
+                        .map(redirectUri -> RedirectUri.builder().uri(redirectUri.getUri()).build())
+                        .collect(Collectors.toSet()));
+        RegisteredClient registeredClient = Client.from(client);
+        return registeredClient;
     }
 
     private void saveClient(RegisteredClient registeredClient) {
-        // redirectUris
-        Set<RedirectUri> redirectUris = registeredClient.getRedirectUris().stream().map(
-                redirectUri -> redirectUriRepository.save(RedirectUri.builder().uri(redirectUri).build())
-        ).collect(Collectors.toSet());
-
-        // logoutRedirectUris
-        Set<RedirectUri> logoutRedirectUris = registeredClient.getPostLogoutRedirectUris().stream().map(
-                redirectUri -> redirectUriRepository.save(RedirectUri.builder().uri(redirectUri).build())
-        ).collect(Collectors.toSet());
-
         // scopes
         Set<Scope> scopes = registeredClient.getScopes().stream().map(
                 scope -> {
@@ -92,15 +89,23 @@ public class CustomClientService implements RegisteredClientRepository {
                 }
         ).collect(Collectors.toSet());
 
+        // client
         Client client = Client.builder()
                 .clientId(registeredClient.getClientId())
                 .secret(registeredClient.getClientSecret())
                 .clientName(registeredClient.getClientName())
-                .redirectUris(redirectUris)
-                .logoutRedirectUris(logoutRedirectUris)
+//                .logoutRedirectUris(logoutRedirectUris)
                 .scopes(scopes)
                 .authenticationMethods(authenticationMethods)
                 .grantTypes(grantTypes).build();
+
+        // redirectUris
+        Set<RedirectUri> redirectUris = registeredClient.getRedirectUris().stream().map(
+                redirectUri -> redirectUriRepository.save(RedirectUri.builder()
+                        .uri(redirectUri)
+                        .client(client)
+                        .build())
+        ).collect(Collectors.toSet());
 
         clientRepository.save(client);
     }

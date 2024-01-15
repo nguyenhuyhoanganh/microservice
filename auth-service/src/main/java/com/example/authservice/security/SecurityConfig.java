@@ -165,43 +165,45 @@ public class SecurityConfig {
      *
      * @return The RegisteredClientRepository instance.
      */
-//    @Bean
-//    public RegisteredClientRepository registeredClientRepository() {
-//        // Create a sample OIDC client
-//        RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
-//                .clientId("client")
-//                .clientSecret("secret")
-//                // If you want to use OidcScopes, need to enable the OIDC configuration
-//                .scope(OidcScopes.OPENID)
-//                .scope(OidcScopes.PROFILE)
-//                // Don't specify "https://localhost" for redirect-uri because OIDC doesn't accept it
-//                // Here use a random uri, the purpose is just to get the authorization_code
-//                // on the uri when redirecting
-//                .redirectUri("https://springone.io/authorized")
-//                // CLIENT_SECRET_BASIC: Base64 encode and put the client-id and secret in the Authorization header,
-//                // with a prefix starting with "Basic "
-//                // Use postman to turn on Authorization, switch to Basic Auth type,
-//                // fill in client-id information in Username, secret in Password
-//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-//                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-//                // Customize access_token and id_token
-//                .tokenSettings(
-//                        TokenSettings.builder()
-//                                // REFERENCE: uses opaque-token (an indecipherable string, cannot read information).
-//                                // Use opaque-token to call back to auth-server via "/oauth2/introspect" to get
-//                                // information
-//                                // SELF_CONTAINED (default): uses JWT, can read and decode information in the payload
-//                                // without calling back to auth-server
-////                                .accessTokenFormat(OAuth2TokenFormat.REFERENCE)
-//                                .accessTokenTimeToLive(Duration.ofSeconds(60 * 10))
-//                                .build()
-//                )
-//                .build();
-//
-//        // Return an InMemoryRegisteredClientRepository with the sample OIDC client
-//        return new InMemoryRegisteredClientRepository(oidcClient);
-//    }
+    /*
+    @Bean
+    public RegisteredClientRepository registeredClientRepository() {
+        // Create a sample OIDC client
+        RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
+                .clientId("client")
+                .clientSecret("secret")
+                // If you want to use OidcScopes, need to enable the OIDC configuration
+                .scope(OidcScopes.OPENID)
+                .scope(OidcScopes.PROFILE)
+                // Don't specify "https://localhost" for redirect-uri because OIDC doesn't accept it
+                // Here use a random uri, the purpose is just to get the authorization_code
+                // on the uri when redirecting
+                .redirectUri("https://springone.io/authorized")
+                // CLIENT_SECRET_BASIC: Base64 encode and put the client-id and secret in the Authorization header,
+                // with a prefix starting with "Basic "
+                // Use postman to turn on Authorization, switch to Basic Auth type,
+                // fill in client-id information in Username, secret in Password
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                // Customize access_token and id_token
+                .tokenSettings(
+                        TokenSettings.builder()
+                                // REFERENCE: uses opaque-token (an indecipherable string, cannot read information).
+                                // Use opaque-token to call back to auth-server via "/oauth2/introspect" to get
+                                // information
+                                // SELF_CONTAINED (default): uses JWT, can read and decode information in the payload
+                                // without calling back to auth-server
+//                                .accessTokenFormat(OAuth2TokenFormat.REFERENCE)
+                                .accessTokenTimeToLive(Duration.ofSeconds(60 * 10))
+                                .build()
+                )
+                .build();
+
+        // Return an InMemoryRegisteredClientRepository with the sample OIDC client
+        return new InMemoryRegisteredClientRepository(oidcClient);
+    }
+     */
 
     /**
      * Provides endpoint configurations according to the default implementation of oauth2
