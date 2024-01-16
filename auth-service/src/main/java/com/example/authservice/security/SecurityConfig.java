@@ -247,32 +247,6 @@ public class SecurityConfig {
  * http://localhost:8000/oauth2/token?client_id=client&redirect_uri=https://springone.io/authorized&grant_type=authorization_code&code=DHP01x-mvMhKwZHiUu9pMgrXxtaJ8KS5ufHJw4g7Mn7LK006CzelQE93u6EcKFZSM0xen8iEgOi5hmtNc8XShTbqW4nwhw7Xf2xZPssPPArAz2_mOxOZpyVToJh2yLFr&code_verifier=qPsH306-ZDDaOE8DFzVn05TkN3ZZoVmI_
  * method: POST, Authorization: Basic Auth
  * fill in client-id information in Username, secret in Password
- * <p>
- * Note:
- * - By default, PCKE is used.
- * - The client creates a 'code_verifier', then uses the SHA-256 or SHA-512 hash function to generate the
- * 'code_challenge'
- * - The hash function to use is provided to the auth-server via the 'code_challenge_method' parameter in step 1 (used
- * SHA256 with value s256).
- * - After receiving the 'authorization_code' from the auth-server, the client uses it and sends it along with
- * the 'code_verifier' back to the auth-server. The purpose is for the auth-server to ensure that the correct user use
- * 'authorization_code' is the client holding the authentication request in step 1.
- * - 'authorization_code' can only be used once.
- * - The endpoints provided by the auth-server can be found by uri: http://localhost:8000/.well-known/openid-configuration
- * - Get the public-key using the uri: http://localhost:8000/oauth2/jwks
- * <p>
- * Note:
- * - By default, PCKE is used.
- * - The client creates a 'code_verifier', then uses the SHA-256 or SHA-512 hash function to generate the
- * 'code_challenge'
- * - The hash function to use is provided to the auth-server via the 'code_challenge_method' parameter in step 1 (used
- * SHA256 with value s256).
- * - After receiving the 'authorization_code' from the auth-server, the client uses it and sends it along with
- * the 'code_verifier' back to the auth-server. The purpose is for the auth-server to ensure that the correct user use
- * 'authorization_code' is the client holding the authentication request in step 1.
- * - 'authorization_code' can only be used once.
- * - The endpoints provided by the auth-server can be found by uri: http://localhost:8000/.well-known/openid-configuration
- * - Get the public-key using the uri: http://localhost:8000/oauth2/jwks
  */
 
 /**

@@ -1,10 +1,21 @@
 package com.example.authservice.enumeration;
 
 public enum ScopeEnum {
+    // This scope indicates that the client is making an OpenID Connect authentication request,
+    // and the authorization server should return an ID Token as part of the response.
     OPENID("openid"),
+
+    // This scope requests access to the user's profile information,
+    // which may include basic details such as name, family name, given name, etc.
     PROFILE("profile"),
+
+    // This scope requests access to the user's email address.
     EMAIL("email"),
+
+    // This scope requests access to the user's postal address information.
     ADDRESS("address"),
+
+    // This scope requests access to the user's phone number.
     PHONE("phone");
 
     private final String value;
