@@ -20,6 +20,6 @@ public class RedirectUri {
     @JoinColumn(name = "client_id")
     private Client client;
 
-//    @Column(name = "is_logout_uri")
-//    private boolean isLogoutUri;
+    @Column(name = "is_logout_uri")
+    private boolean isLogoutUri;
 }

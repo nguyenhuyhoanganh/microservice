@@ -118,6 +118,12 @@
 <!--			<groupId>io.zipkin.reporter2</groupId>-->
 <!--			<artifactId>zipkin-reporter-brave</artifactId>-->
 <!--		</dependency>-->
+
+		<!--Oauth2-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

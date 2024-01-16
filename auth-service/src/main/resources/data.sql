@@ -39,12 +39,9 @@ INSERT INTO scopes (id, scope_name) VALUES
 INSERT INTO clients (id, client_id, client_name, secret, issued_at, expired_time)
 VALUES (1, 'client', 'hoang-anh', 'secret', CURRENT_TIMESTAMP, 1800000);
 
---INSERT INTO redirect_uris (id, uri, client_id, is_logout_uri)
---VALUES (1, 'https://springone.io/authorized', 1, false),
---       (2, 'https://logout-redirect-uri.com', 1, true);
-
-INSERT INTO redirect_uris (id, uri, client_id)
-VALUES (1, 'https://springone.io/authorized', 1);
+INSERT INTO redirect_uris (id, uri, client_id, is_logout_uri)
+VALUES (1, 'https://springone.io/authorized', 1, false),
+       (2, 'https://logout-redirect-uri.com', 1, true);
 
 INSERT INTO clients_grant_types (client_id, grant_type_id)
 VALUES (1, 1), (1, 2);

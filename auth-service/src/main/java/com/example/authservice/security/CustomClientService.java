@@ -1,13 +1,16 @@
 package com.example.authservice.security;
 
 import com.example.authservice.entity.*;
+import com.example.authservice.enumeration.AuthenticationMethodEnum;
+import com.example.authservice.enumeration.GrantTypeEnum;
+import com.example.authservice.enumeration.ScopeEnum;
 import com.example.authservice.exception.ClientNotFoundException;
 import com.example.authservice.repository.*;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.Set;
@@ -43,21 +46,16 @@ public class CustomClientService implements RegisteredClientRepository {
     public RegisteredClient findByClientId(String clientId) {
         Client client = clientRepository.findByClientId(clientId)
                 .orElseThrow(() -> new ClientNotFoundException("Client not found by client_id"));
-        // wtf find client can't fetch redirect_uri???
-        Set<RedirectUri> redirectUris = redirectUriRepository.findByClient(client);
-        client.setRedirectUris(
-                redirectUris.stream()
-                        .map(redirectUri -> RedirectUri.builder().uri(redirectUri.getUri()).build())
-                        .collect(Collectors.toSet()));
         RegisteredClient registeredClient = Client.from(client);
         return registeredClient;
     }
 
     private void saveClient(RegisteredClient registeredClient) {
-        // scopes
+        // scope
         Set<Scope> scopes = registeredClient.getScopes().stream().map(
                 scope -> {
-                    Optional<Scope> scopeOptional = scopeRepository.findByScopeName(scope);
+                    ScopeEnum scopeEnum = ScopeEnum.fromValue(scope);
+                    Optional<Scope> scopeOptional = scopeRepository.findByScopeName(scopeEnum.name());
                     if (scopeOptional.isEmpty())
                         throw new RuntimeException("Can't use other scopes except OPENID, PROFILE, EMAIL," +
                                 " ADDRESS and PHONE");
@@ -65,11 +63,13 @@ public class CustomClientService implements RegisteredClientRepository {
                 }
         ).collect(Collectors.toSet());
 
-        // authentication method
+        // authentication_method
         Set<AuthenticationMethod> authenticationMethods = registeredClient.getClientAuthenticationMethods().stream().map(
                 authenticationMethod -> {
+                    AuthenticationMethodEnum authenticationMethodEnum =
+                            AuthenticationMethodEnum.fromValue(authenticationMethod.getValue());
                     Optional<AuthenticationMethod> authenticationMethodOptional =
-                            authenticationMethodRepository.findByAuthenticationMethod(authenticationMethod.getValue());
+                            authenticationMethodRepository.findByAuthenticationMethod(authenticationMethodEnum.name());
                     if (authenticationMethodOptional.isEmpty())
                         throw new RuntimeException("Can't use other authentication method except CLIENT_SECRET_BASIC," +
                                 " CLIENT_SECRET_POST, CLIENT_SECRET_JWT, PRIVATE_KEY_JWT, and NONE");
@@ -77,11 +77,12 @@ public class CustomClientService implements RegisteredClientRepository {
                 }
         ).collect(Collectors.toSet());
 
-        // grant type
+        // grant_type
         Set<GrantType> grantTypes = registeredClient.getAuthorizationGrantTypes().stream().map(
                 grantType -> {
+                    GrantTypeEnum grantTypeEnum = GrantTypeEnum.fromValue(grantType.getValue());
                     Optional<GrantType> grantTypeOptional =
-                            grantTypeRepository.findByGrantType(grantType.getValue());
+                            grantTypeRepository.findByGrantType(grantTypeEnum.name());
                     if (grantTypeOptional.isEmpty())
                         throw new RuntimeException("Can't use other grant type except AUTHORIZATION_CODE, " +
                                 "REFRESH_TOKEN, CLIENT_CREDENTIALS, PASSWORD, JWT_BEARER and DEVICE_CODE");
@@ -94,19 +95,29 @@ public class CustomClientService implements RegisteredClientRepository {
                 .clientId(registeredClient.getClientId())
                 .secret(registeredClient.getClientSecret())
                 .clientName(registeredClient.getClientName())
-//                .logoutRedirectUris(logoutRedirectUris)
                 .scopes(scopes)
                 .authenticationMethods(authenticationMethods)
                 .grantTypes(grantTypes).build();
 
-        // redirectUris
-        Set<RedirectUri> redirectUris = registeredClient.getRedirectUris().stream().map(
+        // save client
+        Client clientCreated = clientRepository.save(client);
+
+        // save redirect_uri
+        registeredClient.getRedirectUris().stream().forEach(
                 redirectUri -> redirectUriRepository.save(RedirectUri.builder()
                         .uri(redirectUri)
-                        .client(client)
+                        .client(clientCreated)
+                        .isLogoutUri(false)
                         .build())
-        ).collect(Collectors.toSet());
+        );
 
-        clientRepository.save(client);
+        // save logout_redirect_uri
+        registeredClient.getPostLogoutRedirectUris().stream().forEach(
+                redirectUri -> redirectUriRepository.save(RedirectUri.builder()
+                        .uri(redirectUri)
+                        .client(clientCreated)
+                        .isLogoutUri(true)
+                        .build())
+        );
     }
 }

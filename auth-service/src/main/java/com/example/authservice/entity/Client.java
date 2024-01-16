@@ -1,7 +1,11 @@
 package com.example.authservice.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -10,6 +14,7 @@ import org.springframework.security.oauth2.server.authorization.settings.OAuth2T
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 
 import java.time.Duration;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,16 +38,17 @@ public class Client {
     private String secret;
 
     @OneToMany(mappedBy = "client")
-    private Set<RedirectUri> redirectUris;
+    @SQLRestriction("is_logout_uri = false")
+    private Collection<RedirectUri> redirectUris;
 
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "client")
-//    @SQLRestriction("is_logout_uri = true")
-//    private Set<RedirectUri> logoutRedirectUris;
+    @OneToMany(mappedBy = "client")
+    @SQLRestriction("is_logout_uri = true")
+    private Collection<RedirectUri> logoutRedirectUris;
 
     @ManyToMany
     @JoinTable(name = "clients_scopes", joinColumns = @JoinColumn(name = "client_id"), inverseJoinColumns =
     @JoinColumn(name = "scope_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"client_id", "scope_id"}))
-    private Set<Scope> scopes;
+    private Collection<Scope> scopes;
 
     @ManyToMany
     @JoinTable(name = "clients_authentication_methods", joinColumns = @JoinColumn(name = "client_id"),
@@ -53,7 +59,7 @@ public class Client {
     @ManyToMany
     @JoinTable(name = "clients_grant_types", joinColumns = @JoinColumn(name = "client_id"), inverseJoinColumns =
     @JoinColumn(name = "grant_type_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"client_id", "grant_type_id"}))
-    private Set<GrantType> grantTypes;
+    private Collection<GrantType> grantTypes;
 
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
@@ -65,34 +71,38 @@ public class Client {
     // token_settings, client_settings
 
     public static RegisteredClient from(Client client) {
-        System.out.println(client.getRedirectUris());
         return RegisteredClient.withId(String.valueOf(client.getId()))
                 .clientId(client.getClientId())
                 .clientSecret(client.getSecret())
                 .clientName(client.getClientName())
-                .scopes(scopes -> scopes.addAll(client.getScopes().stream()
-                        .map(scope -> scope.getScopeName().name())
+                .scopes(scopes -> scopes.addAll(client.getScopes()
+                        .stream()
+                        .map(scope -> scope.getScopeName().getValue())
                         .collect(Collectors.toSet())))
-                .redirectUris(redirectUris -> redirectUris.addAll(client.getRedirectUris().stream()
-//                        .filter(redirectUri -> redirectUri.isLogoutUri() == false)
+                .redirectUris(redirectUris -> redirectUris.addAll(client.getRedirectUris()
+                        .stream()
                         .map(redirectUri -> redirectUri.getUri())
                         .collect(Collectors.toSet())))
-//                .postLogoutRedirectUris(redirectUris -> redirectUris.addAll(client.getLogoutRedirectUris().stream()
-//                        .filter(redirectUri -> redirectUri.isLogoutUri() == true)
-//                        .map(redirectUri -> redirectUri.getUri()).collect(Collectors.toSet())))
+                .postLogoutRedirectUris(logoutUris -> logoutUris.addAll(client.getLogoutRedirectUris()
+                        .stream()
+                        .map(logoutUri -> logoutUri.getUri())
+                        .collect(Collectors.toSet())))
                 .clientAuthenticationMethods(
-                        authenticationMethods -> authenticationMethods.addAll(client.getAuthenticationMethods().stream()
+                        authenticationMethods -> authenticationMethods.addAll(client.getAuthenticationMethods()
+                                .stream()
                                 .map(authenticationMethod ->
                                         new ClientAuthenticationMethod(
-                                                authenticationMethod.getAuthenticationMethod().name()))
+                                                authenticationMethod.getAuthenticationMethod().getValue()))
                                 .collect(Collectors.toSet())))
                 .authorizationGrantTypes(
-                        grantTypes -> grantTypes.addAll(client.getGrantTypes().stream()
-                                .map(grantType -> new AuthorizationGrantType(grantType.getGrantType().name()))
+                        grantTypes -> grantTypes.addAll(client.getGrantTypes()
+                                .stream()
+                                .map(grantType ->
+                                        new AuthorizationGrantType(grantType.getGrantType().getValue()))
                                 .collect(Collectors.toSet())))
                 .tokenSettings(TokenSettings.builder()
-                .accessTokenFormat(OAuth2TokenFormat
-                        .REFERENCE)
+                        // use default jwt
+                        .accessTokenFormat(OAuth2TokenFormat.REFERENCE)
                         .accessTokenTimeToLive(Duration.ofMillis(client.getExpiredTime())).build())
                 .build();
     }
