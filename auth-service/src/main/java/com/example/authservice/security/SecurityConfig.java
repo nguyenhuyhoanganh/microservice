@@ -8,8 +8,10 @@ import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +23,7 @@ import org.springframework.security.oauth2.server.authorization.token.JwtEncodin
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -30,6 +33,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
     /**
@@ -127,7 +131,10 @@ public class SecurityConfig {
         // Exception handling configuration
         http.exceptionHandling((exceptions) ->
                         // Redirect to the login page when not authenticated from the authorization endpoint
-                        exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
+                        exceptions.defaultAuthenticationEntryPointFor(
+                                new LoginUrlAuthenticationEntryPoint("/login"),
+                                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
+                        )
                 )
                 // OAuth2 Resource Server configuration
                 // Accept access tokens for User Info and/or Client Registration
@@ -149,8 +156,10 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         // Authorize all HTTP requests, requiring authentication
-        http.authorizeHttpRequests((authorize) -> authorize
-                        .anyRequest().authenticated()
+        http.authorizeHttpRequests((authorize) ->
+                        authorize
+                                .requestMatchers("/actuator/**").permitAll()
+                                .anyRequest().authenticated()
                 )
                 // Form login handles the redirect to the login page from the authorization server filter chain
                 .formLogin(Customizer.withDefaults());
@@ -203,6 +212,7 @@ public class SecurityConfig {
         // Return an InMemoryRegisteredClientRepository with the sample OIDC client
         return new InMemoryRegisteredClientRepository(oidcClient);
     }
+
      */
 
     /**
@@ -244,9 +254,35 @@ public class SecurityConfig {
  * uri includes authorization_code
  * <p>
  * 4. Use authentication_code to call the path like pattern:
- * http://localhost:8000/oauth2/token?client_id=client&redirect_uri=https://springone.io/authorized&grant_type=authorization_code&code=DHP01x-mvMhKwZHiUu9pMgrXxtaJ8KS5ufHJw4g7Mn7LK006CzelQE93u6EcKFZSM0xen8iEgOi5hmtNc8XShTbqW4nwhw7Xf2xZPssPPArAz2_mOxOZpyVToJh2yLFr&code_verifier=qPsH306-ZDDaOE8DFzVn05TkN3ZZoVmI_
+ * http://localhost:8000/oauth2/token?client_id=client&redirect_uri=https://springone.io/authorized&grant_type=authorization_code&code=DHP01x-mvMhKwZHiUu9pMgrXxtaJ8KS5ufHJw4g7Mn7LK006CzelQE93u6EcKFZSM0xen8iEgOi5hmtNc8XShTbqW4nwhw7Xf2xZPssPPArAz2_mOxOZpyVToJh2yLFr&code_verifier=qPsH306-ZDDaOE8DFzVn05TkN3ZZoVmI_6x4LsVglQI
  * method: POST, Authorization: Basic Auth
  * fill in client-id information in Username, secret in Password
+ * <p>
+ * Note:
+ * - By default, PCKE is used.
+ * - The client creates a 'code_verifier', then uses the SHA-256 or SHA-512 hash function to generate the
+ * 'code_challenge'
+ * - The hash function to use is provided to the auth-server via the 'code_challenge_method' parameter in step 1 (used
+ * SHA256 with value s256).
+ * - After receiving the 'authorization_code' from the auth-server, the client uses it and sends it along with
+ * the 'code_verifier' back to the auth-server. The purpose is for the auth-server to ensure that the correct user use
+ * 'authorization_code' is the client holding the authentication request in step 1.
+ * - 'authorization_code' can only be used once.
+ * - The endpoints provided by the auth-server can be found by uri: http://localhost:8000/.well-known/openid-configuration
+ * - Get the public-key using the uri: http://localhost:8000/oauth2/jwks
+ * <p>
+ * Note:
+ * - By default, PCKE is used.
+ * - The client creates a 'code_verifier', then uses the SHA-256 or SHA-512 hash function to generate the
+ * 'code_challenge'
+ * - The hash function to use is provided to the auth-server via the 'code_challenge_method' parameter in step 1 (used
+ * SHA256 with value s256).
+ * - After receiving the 'authorization_code' from the auth-server, the client uses it and sends it along with
+ * the 'code_verifier' back to the auth-server. The purpose is for the auth-server to ensure that the correct user use
+ * 'authorization_code' is the client holding the authentication request in step 1.
+ * - 'authorization_code' can only be used once.
+ * - The endpoints provided by the auth-server can be found by uri: http://localhost:8000/.well-known/openid-configuration
+ * - Get the public-key using the uri: http://localhost:8000/oauth2/jwks
  */
 
 /**

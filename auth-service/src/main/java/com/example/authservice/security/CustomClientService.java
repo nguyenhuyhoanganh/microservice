@@ -7,6 +7,7 @@ import com.example.authservice.enumeration.ScopeEnum;
 import com.example.authservice.exception.ClientNotFoundException;
 import com.example.authservice.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional
@@ -29,6 +31,7 @@ public class CustomClientService implements RegisteredClientRepository {
 
     @Override
     public void save(RegisteredClient registeredClient) {
+        log.info("save " + registeredClient);
         boolean hasExist = clientRepository.findById(Long.valueOf(registeredClient.getId())).isPresent();
         if (hasExist == true)
             throw new RuntimeException("Client already exists");
@@ -39,7 +42,9 @@ public class CustomClientService implements RegisteredClientRepository {
     public RegisteredClient findById(String id) {
         Client client = clientRepository.findById(Long.valueOf(id))
                 .orElseThrow(() -> new ClientNotFoundException("Client not found by id"));
-        return Client.from(client);
+        RegisteredClient registeredClient = Client.from(client);
+//        log.info("findById " + id + " " + registeredClient);
+        return registeredClient;
     }
 
     @Override
@@ -47,6 +52,7 @@ public class CustomClientService implements RegisteredClientRepository {
         Client client = clientRepository.findByClientId(clientId)
                 .orElseThrow(() -> new ClientNotFoundException("Client not found by client_id"));
         RegisteredClient registeredClient = Client.from(client);
+//        log.info("findByClientId " + clientId + " " + registeredClient);
         return registeredClient;
     }
 

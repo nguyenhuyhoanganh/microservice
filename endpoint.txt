@@ -3,6 +3,9 @@
 3. Admin monitor: http://localhost:9000/
 4. Auth service: http://localhost:8000/
 5. Ecommerce service: http://localhost:8001/
+  (oauth2 resource)
 6. Gateway: http://localhost:8080/
    - map auth-service: http://localhost:8080/auth/
    - map ecommerce-service http://localhost:8080/ecommerce/
+7. Notification service: http://localhost:8002/
+  (oauth2 client)
