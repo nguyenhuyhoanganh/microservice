@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 //import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.boot.actuate.endpoint.SecurityContext;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -36,7 +37,7 @@ public class NotificationController {
 //    }
 
     @GetMapping("/notify")
-    public void inform() {
-        log.info(LocalDateTime.now().toString());
+    public void inform(@RequestHeader("Authorization") String authorizationHeader) {
+        log.info(authorizationHeader);
     }
 }

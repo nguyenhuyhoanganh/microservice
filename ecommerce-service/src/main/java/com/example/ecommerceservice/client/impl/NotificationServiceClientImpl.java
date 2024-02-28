@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class NotificationServiceClientImpl implements INotificationServiceClient {
     @Override
-    public void inform() {
+    public void inform(String authorizationHeader) {
         log.error("Notification service has errors!");
         throw new RuntimeException("Notification service has errors!");
     }
