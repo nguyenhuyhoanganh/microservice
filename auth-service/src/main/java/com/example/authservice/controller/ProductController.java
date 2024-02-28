@@ -14,11 +14,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/product")
 public class ProductController {
-    @Autowired
-    private IProductServiceClient serviceClient;
-
-    @GetMapping("")
-    public ResponseEntity<ResponseDTO<List<ProductDTO>>> getAll(){
-        return serviceClient.getAll();
-    }
+//    @Autowired
+//    private IProductServiceClient serviceClient;
+//
+//    @GetMapping("")
+//    public ResponseEntity<ResponseDTO<List<ProductDTO>>> getAll(){
+//        return serviceClient.getAll();
+//    }
 }

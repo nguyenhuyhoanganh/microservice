@@ -1,5 +1,6 @@
 package com.example.ecommerceservice.controller;
 
+import com.example.ecommerceservice.client.INotificationServiceClient;
 import com.example.ecommerceservice.dto.ProductDTO;
 import com.example.ecommerceservice.dto.ResponseDTO;
 import com.example.ecommerceservice.service.IProductService;
@@ -19,9 +20,12 @@ import java.util.List;
 public class ProductController {
     @Autowired
     private IProductService service;
+    @Autowired
+    private INotificationServiceClient notificationClient;
 
     @GetMapping("")
     public ResponseEntity<ResponseDTO<List<ProductDTO>>> getAll(){
+        notificationClient.inform();
         ResponseDTO<List<ProductDTO>> responseBody = ResponseDTO.<List<ProductDTO>>builder().data(service.getAll()).build();
         return new ResponseEntity<ResponseDTO<List<ProductDTO>>>(responseBody, HttpStatus.OK);
     }

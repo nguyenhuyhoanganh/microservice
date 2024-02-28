@@ -18,6 +18,11 @@ public class GatewayConfig {
                         .filters(f -> f.rewritePath("/ecommerce/(?<segment>.*)", "/${segment}")
                                 .addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
                         .uri("lb://ecommerce-service"))
+                .route(p -> p
+                        .path("/notification/**")
+                        .filters(f -> f.rewritePath("/notification/(?<segment>.*)", "/${segment}")
+                                .addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
+                        .uri("lb://notification-service"))
                 .build();
     }
 

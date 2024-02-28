@@ -15,6 +15,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeExchange(exchanges -> exchanges
+                        .pathMatchers("/ecommerce/**").hasRole("ADMIN")
                         .anyExchange().authenticated())
                 .oauth2ResourceServer((oauth2 -> oauth2
                         .jwt(jwt -> jwt
