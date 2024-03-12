@@ -9,4 +9,6 @@ public class ExceptionCode {
     public static final String CONFLICT_CODE = "com.example.springproject.exception.base.ConflictException";
     public static final String NOT_FOUND_CODE = "com.example.springproject.exception.base.NotFoundException";
     public static final String GENERIC_CODE = "com.example.springproject.exception.base.GenericException";
+    public static final String IMAGE_NOTFOUND= "com.example.basespringboottest.exception.image.ImageNotFoundException";
+    public static final String IMAGE_EMPTY= "com.example.basespringboottest.exception.image.ImageEmptyException";
 }

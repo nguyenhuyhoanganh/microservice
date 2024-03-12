@@ -5,5 +5,6 @@ package com.example.basespringboottest.constant;
  * These codes can be associated with specific operations or events for message identification and handling.
  */
 public class MessageCodeConstants {
+  public static final String SUCCESS = "com.example.basespringboottest.controller";
 
 }

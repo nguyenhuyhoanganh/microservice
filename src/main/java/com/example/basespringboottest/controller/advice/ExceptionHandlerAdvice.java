@@ -98,13 +98,13 @@ public class ExceptionHandlerAdvice {
      * @param locale  The locale for response messages.
      * @return ResponseEntity containing a ResponseGeneral with the error details.
      */
-    @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<ResponseGeneral<Object>> handleGenericException(Locale locale) {
-        String message = getMessage(GENERIC_CODE, locale, null);
-        ResponseGeneral<Object> response = ResponseGeneral.of(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null);
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    public ResponseEntity<ResponseGeneral<Object>> handleGenericException(Locale locale) {
+//        String message = getMessage(GENERIC_CODE, locale, null);
+//        ResponseGeneral<Object> response = ResponseGeneral.of(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null);
+//        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
     /**
      * Utility method to retrieve localized error messages.
