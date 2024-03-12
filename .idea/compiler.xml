@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="auth-service" />
+        <module name="monitor-admin" />
+        <module name="config-service" />
+        <module name="gateway-service" />
+        <module name="ecommerce-service" />
+        <module name="notification-service" />
+        <module name="discovery-service" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="auth-service" target="17" />
+      <module name="config-service" target="17" />
+      <module name="discovery-service" target="17" />
+      <module name="ecommerce-service" target="17" />
+      <module name="gateway-service" target="17" />
+      <module name="monitor-admin" target="17" />
+      <module name="notification-service" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="auth-service" options="-parameters" />
+      <module name="config-service" options="-parameters" />
+      <module name="discovery-service" options="-parameters" />
+      <module name="ecommerce-service" options="-parameters" />
+      <module name="gateway-service" options="-parameters" />
+      <module name="monitor-admin" options="-parameters" />
+      <module name="notification-service" options="-parameters" />
+    </option>
+  </component>
+</project>

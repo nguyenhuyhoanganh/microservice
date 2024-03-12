@@ -132,11 +132,6 @@ public class SecurityConfig {
     @Order(1)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
         // Customize and create a mapper to put user information into the /userinfo endpoint
-        OAuth2AuthorizationServerConfigurer oAuth2AuthorizationServerConfigurer =
-                new OAuth2AuthorizationServerConfigurer();
-        RequestMatcher endpointsMatcher = oAuth2AuthorizationServerConfigurer
-                .getEndpointsMatcher();
-
         Function<OidcUserInfoAuthenticationContext, OidcUserInfo> userInfoMapper = (context) -> {
             OidcUserInfoAuthenticationToken authentication = context.getAuthentication();
             JwtAuthenticationToken principal = (JwtAuthenticationToken) authentication.getPrincipal();
@@ -147,12 +142,24 @@ public class SecurityConfig {
             return new OidcUserInfo(userInfo);
         };
 
+        // create configurer, get endpoints matcher
+        OAuth2AuthorizationServerConfigurer oAuth2AuthorizationServerConfigurer =
+                new OAuth2AuthorizationServerConfigurer();
+        RequestMatcher endpointsMatcher = oAuth2AuthorizationServerConfigurer
+                .getEndpointsMatcher();
+
+        // config oidc, use mapper
         oAuth2AuthorizationServerConfigurer
                 .oidc((oidc) -> oidc
                         .userInfoEndpoint((userInfo) -> userInfo
                                 .userInfoMapper(userInfoMapper)
                         )
                 );
+
+        // endpoint matcher, ignore csrf
+        // declare it as resource to secure /userinfo endpoint
+        // use login form, url: /login
+        // apply configurer
         http
                 .securityMatcher(endpointsMatcher)
                 .authorizeHttpRequests((authorize) -> authorize

@@ -25,8 +25,8 @@ public class ProductController {
     private IProductService service;
     @Autowired
     private IUserInfoService userInfoService;
-    @Autowired
-    private INotificationServiceClient notificationClient;
+//    @Autowired
+//    private INotificationServiceClient notificationClient;
 
     @GetMapping("")
     public ResponseEntity<ResponseDTO<List<ProductDTO>>> getAll(@RequestHeader("Authorization") String authorizationHeader){
@@ -37,7 +37,7 @@ public class ProductController {
             log.info(userInfo.toString());
         }
 
-        notificationClient.inform(authorizationHeader);
+//        notificationClient.inform(authorizationHeader);
         ResponseDTO<List<ProductDTO>> responseBody = ResponseDTO.<List<ProductDTO>>builder().data(service.getAll()).build();
         return new ResponseEntity<ResponseDTO<List<ProductDTO>>>(responseBody, HttpStatus.OK);
     }
