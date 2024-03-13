@@ -5,12 +5,12 @@ package com.example.basespringboottest.service.base;
  */
 public interface MessageService {
 
-    /**
-     * Retrieves a message for the given code and language.
-     *
-     * @param code     The code identifying the message.
-     * @param language The language in which the message should be retrieved.
-     * @return The message associated with the given code and language.
-     */
-    String getMessage(String code, String language);
+  /**
+   * Retrieves a message for the given code and language.
+   *
+   * @param code     The code identifying the message.
+   * @param language The language in which the message should be retrieved.
+   * @return The message associated with the given code and language.
+   */
+  String getMessage(String code, String language);
 }

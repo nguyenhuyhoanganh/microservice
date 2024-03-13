@@ -22,7 +22,7 @@ public class LocalStorageService implements StorageService {
       Files.write(filePath, file.getBytes());
       return filePath.toString();
     } catch (IOException e) {
-      throw new RuntimeException("Lỗi lưu trữ tệp", e);
+      throw new RuntimeException("An error occurred while storing the file", e);
     }
   }
 
@@ -38,15 +38,6 @@ public class LocalStorageService implements StorageService {
 //  }
 
 
-  @Override
-  public byte[] getFile(String storagePath) {
-    try {
-      Path path = Paths.get(storagePath);
-      return Files.readAllBytes(path);
-    } catch (IOException e) {
-      throw new RuntimeException("Lỗi lấy file", e);
-    }
-  }
 }
 
 

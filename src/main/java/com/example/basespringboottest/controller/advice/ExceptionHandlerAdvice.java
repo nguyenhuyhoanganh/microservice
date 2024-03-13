@@ -9,11 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -25,7 +29,6 @@ import static com.example.basespringboottest.constant.ExceptionCode.GENERIC_CODE
 @RestControllerAdvice
 @ControllerAdvice
 public class ExceptionHandlerAdvice {
-
     private final MessageSource messageSource;
 
     @Autowired
@@ -93,18 +96,36 @@ public class ExceptionHandlerAdvice {
     }
 
     /**
+     * Handles MethodArgumentNotValidException and returns a 400 Bad Request response.
+     *
+     * @param ex          The MethodArgumentNotValidException instance.
+     * @return ResponseGeneral containing a Map of field errors with their corresponding error messages.
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseGeneral<Map<String, String>> handleBindingException(MethodArgumentNotValidException ex){
+        BindingResult bindingResult = ex.getBindingResult();
+        Map<String, String> errors = new HashMap<>();
+
+        for (FieldError fieldError : bindingResult.getFieldErrors()) {
+            errors.put(fieldError.getField(), fieldError.getDefaultMessage());
+        }
+        return ResponseGeneral.<Map<String, String>>of(400, "Error binding", errors);
+    }
+
+    /**
      * Handles generic RuntimeException and returns a 500 Internal Server Error response.
      *
      * @param locale  The locale for response messages.
      * @return ResponseEntity containing a ResponseGeneral with the error details.
      */
-//    @ExceptionHandler(RuntimeException.class)
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    public ResponseEntity<ResponseGeneral<Object>> handleGenericException(Locale locale) {
-//        String message = getMessage(GENERIC_CODE, locale, null);
-//        ResponseGeneral<Object> response = ResponseGeneral.of(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null);
-//        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<ResponseGeneral<Object>> handleGenericException(Locale locale) {
+        String message = getMessage(GENERIC_CODE, locale, null);
+        ResponseGeneral<Object> response = ResponseGeneral.of(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
     /**
      * Utility method to retrieve localized error messages.

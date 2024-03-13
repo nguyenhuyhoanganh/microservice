@@ -3,28 +3,17 @@ package com.example.basespringboottest.utils;
 import com.example.basespringboottest.exception.image.FileTooLargeException;
 import com.example.basespringboottest.exception.image.ImageEmptyException;
 import com.example.basespringboottest.exception.image.ImageFormatInCorrectException;
-import com.googlecode.pngtastic.core.PngImage;
-import com.googlecode.pngtastic.core.PngOptimizer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.ImageOutputStream;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 
 import static com.example.basespringboottest.constant.CommonConstants.*;
 
@@ -56,6 +45,7 @@ public class ImageUtils {
      * Check size of file
      */
     double fileSize = (double) (file.getSize() / BYTES_IN_MEGABYTE);
+    log.info("size of the file: {}", fileSize);
     if (fileSize > MAX_FILE_SIZE_MB) {
       throw new FileTooLargeException();
     }
@@ -77,5 +67,38 @@ public class ImageUtils {
     return extensions.contains(fileExtension.toLowerCase());
   }
 
+  public static byte[] compressImage(byte[] data) throws IOException {
+    Deflater deflater = new Deflater();
+    deflater.setLevel(Deflater.BEST_COMPRESSION);
+    deflater.setInput(data);
+    deflater.finish();
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+    byte[] tmp = new byte[BITE_SIZE];
+
+    while (!deflater.finished()) {
+      int size = deflater.deflate(tmp);
+      outputStream.write(tmp, 0, size);
+    }
+
+    outputStream.close();
+
+    return outputStream.toByteArray();
+  }
+
+  public static byte[] decompressImage(byte[] data) throws DataFormatException, IOException {
+    Inflater inflater = new Inflater();
+    inflater.setInput(data);
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+    byte[] tmp = new byte[BITE_SIZE];
+
+    while (!inflater.finished()) {
+      int count = inflater.inflate(tmp);
+      outputStream.write(tmp, 0, count);
+    }
+
+    outputStream.close();
+
+    return outputStream.toByteArray();
+  }
 
 }

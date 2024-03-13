@@ -29,7 +29,7 @@ public class PageResponse<T> {
      * @param <T> generic type
      * @return a PageResponse with generic type
      */
-    public static <T> PageResponse<T> name(List<T> data, Integer amount) {
-        return of(data, Objects.isNull(amount) ? 0 : amount);
+    public static <T> PageResponse<T> of(List<T> data, Integer amount) {
+        return new PageResponse<>(data, Objects.isNull(amount) ? 0 : amount.intValue());
     }
 }

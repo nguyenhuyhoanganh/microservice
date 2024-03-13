@@ -1,10 +1,12 @@
 package com.example.basespringboottest.dto.response.image;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ImageResponse {
@@ -13,7 +15,6 @@ public class ImageResponse {
   private String contentType;
   private String name;
   private byte[] data;
-  private boolean isDeleted;
 
   public ImageResponse(String id, String url, String contentType, String name) {
     this.id = id;

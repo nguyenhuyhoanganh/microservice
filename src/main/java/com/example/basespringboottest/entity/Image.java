@@ -20,12 +20,10 @@ public class Image extends BaseEntityWithUpdater {
   private String name;
   @Lob
   private byte[] data;
-  private boolean isDeleted;
 
   public Image(String url, String contentType, String name) {
     this.url = url;
     this.contentType = contentType;
     this.name = name;
-    this.isDeleted = false;
   }
 }
