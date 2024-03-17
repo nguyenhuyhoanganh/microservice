@@ -19,13 +19,11 @@ public class GatewayConfig {
                                 .addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
                         .uri("lb://ecommerce-service"))
 
-
                 .route(p -> p
                         .path("/auth/**")
                         .filters(f -> f.rewritePath("/auth/(?<segment>.*)", "/${segment}")
                                 .addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
                         .uri("lb://auth-service"))
-
 
                 .route(p -> p
                         .path("/notification/**")
