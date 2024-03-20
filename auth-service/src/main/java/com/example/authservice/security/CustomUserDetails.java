@@ -1,5 +1,6 @@
 package com.example.authservice.security;
 
+import com.example.authservice.dto.UserDTO;
 import com.example.authservice.entity.User;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,16 +13,16 @@ import java.util.stream.Collectors;
 @Data
 public class CustomUserDetails implements UserDetails {
 
-    private User user;
+    private UserDTO user;
 
-    public CustomUserDetails(User user) {
+    public CustomUserDetails(UserDTO user) {
         this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getRoleName().name()))
+                .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
                 .collect(Collectors.toList());
     }
 

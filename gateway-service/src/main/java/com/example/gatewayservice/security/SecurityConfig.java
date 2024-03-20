@@ -8,6 +8,7 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
+// token -> authentication lưu security context (lấy được role ra rồi)
 @Configuration
 public class SecurityConfig {
     @Bean

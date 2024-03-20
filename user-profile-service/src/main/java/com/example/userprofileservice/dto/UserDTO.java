@@ -1,6 +1,7 @@
-package com.example.authservice.dto;
+package com.example.userprofileservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,10 +30,6 @@ public class UserDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String username;
 
-    @NotBlank
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String credential; // password
-
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String email;
 
@@ -41,6 +38,10 @@ public class UserDTO {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private boolean isActive;
+
+    @NotBlank
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String credential; // password
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<RoleDTO> roles;

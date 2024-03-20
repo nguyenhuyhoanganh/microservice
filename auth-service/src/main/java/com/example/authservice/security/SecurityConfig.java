@@ -1,7 +1,7 @@
 package com.example.authservice.security;
 
-import com.example.authservice.entity.User;
-import com.example.authservice.repository.UserRepository;
+import com.example.authservice.client.IUserProfileClient;
+import com.example.authservice.dto.UserDTO;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
@@ -40,15 +40,20 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     @Autowired
-    private UserRepository userRepository;
+    private IUserProfileClient userProfileClient;
+
+//    @Autowired
+//    private UserRepository userRepository;
 
     /**
      * Generates an RSA key pair for cryptographic operations.
@@ -239,20 +244,16 @@ public class SecurityConfig {
     }
 
     private Map<String, Object> getUserInfo(String username) {
-        Optional<User> userOptional = userRepository.findByUsername(username);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            Map<String, Object> userInfo = Map.of(
-                    "id", user.getId(),
-                    "userName", user.getUsername(),
-                    "firstName", user.getFirstName(),
-                    "lastName", user.getLastName(),
-                    "modifiedAt", user.getModifiedAt(),
-                    "createdAt", user.getCreatedAt()
-            );
-            return userInfo;
-        }
-        throw new RuntimeException("Can't find user by username");
+        UserDTO user = userProfileClient.getByUsername(username).getBody().getData();
+        Map<String, Object> userInfo = Map.of(
+                "id", user.getId(),
+                "userName", user.getUsername(),
+                "firstName", user.getFirstName(),
+                "lastName", user.getLastName(),
+                "modifiedAt", user.getModifiedAt(),
+                "createdAt", user.getCreatedAt()
+        );
+        return userInfo;
     }
 }
 

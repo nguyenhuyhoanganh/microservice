@@ -1,5 +1,7 @@
 package com.example.authservice.security;
 
+import com.example.authservice.client.IUserProfileClient;
+import com.example.authservice.dto.UserDTO;
 import com.example.authservice.entity.User;
 import com.example.authservice.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -12,16 +14,15 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository repository;
+    private final IUserProfileClient userProfileClient;
 
-    public CustomUserDetailsService(UserRepository repository) {
-        this.repository = repository;
+    public CustomUserDetailsService(IUserProfileClient userProfileClient) {
+        this.userProfileClient = userProfileClient;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = repository.findByUsername(username).orElseThrow(()
-                -> new UsernameNotFoundException("User with username: " + username + " was not found"));
+        UserDTO user = userProfileClient.getByUsername(username).getBody().getData();
         return new CustomUserDetails(user);
     }
 
